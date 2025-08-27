@@ -17,16 +17,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 42
-#endif
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *s1, char const *s2);
-void	*free_and_return(char *ptr);
+void	*free_and_return(char **ptr);
 char	*ft_extract_line(char *buffer);
 char	*ft_extract_leftover(char *buffer);
 char	*read_until_newline(int fd, char *leftover, char *buf);

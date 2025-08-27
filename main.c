@@ -3,14 +3,16 @@
 #include <stdio.h>
 #include <string.h>
 
-int	main()
+int	main(void)
 {
-	int fd = open("read_error.txt", O_RDONLY);
-	char *str = get_next_line(fd);
+	int		fd;
+	char	*str;
+
+	fd = open("read_error.txt", O_RDONLY);
+	str = get_next_line(fd);
 	printf("%s", str);
 	close(fd);
 	free(str);
-	
 	// printf("%d", strcmp("aaaaaaaaaa\n", str));
 	// close(fd);
 }

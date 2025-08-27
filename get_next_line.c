@@ -12,10 +12,13 @@
 
 #include "get_next_line.h"
 
-void	*free_and_return(char *ptr)
+void	*free_and_return(char **ptr)
 {
-	if (ptr)
-		free(ptr);
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
 	return (NULL);
 }
 
@@ -54,7 +57,7 @@ char	*ft_extract_leftover(char *buffer)
 	free(line);
 	leftover = ft_substr(buffer, linelen, buflen - linelen);
 	if (!leftover || !leftover[0])
-		return (free_and_return(leftover));
+		return (free_and_return(&leftover));
 	return (leftover);
 }
 
@@ -74,7 +77,7 @@ char	*read_until_newline(int fd, char *leftover, char *buf)
 	{
 		bytes = read(fd, buf, BUFFER_SIZE);
 		if (bytes < 0)
-			return (free_and_return(buffer));
+			return (free_and_return(&buffer));
 		buf[bytes] = '\0';
 		buffer = ft_strjoin(buffer, buf);
 		if (!buffer)
@@ -98,15 +101,15 @@ char	*get_next_line(int fd)
 	buffer = read_until_newline(fd, leftover, buf);
 	free(buf);
 	if (!buffer)
-		return (NULL);
+		return (free_and_return(&leftover));
 	line = ft_extract_line(buffer);
 	if (!line)
-		return (free_and_return(buffer));
+		return (free_and_return(&buffer));
 	if (leftover)
 		free(leftover);
 	leftover = ft_extract_leftover(buffer);
 	free(buffer);
-	if (!leftover && ft_strlen(line) == 0)
-		return (free_and_return(line));
+	if ((!line || !*line) && !leftover)
+		free_and_return(&line);
 	return (line);
 }
