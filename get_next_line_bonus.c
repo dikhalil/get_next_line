@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dikhalil <dikhalil@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 18:59:39 by dikhalil          #+#    #+#             */
-/*   Updated: 2025/08/30 15:02:01 by dikhalil         ###   ########.fr       */
+/*   Updated: 2025/08/28 11:37:05 by dikhalil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	*free_and_return(char **ptr)
 {
@@ -40,18 +40,21 @@ static char	*ft_extract_line(char *buffer)
 	return (line);
 }
 
-static char	*ft_extract_leftover(char *buffer, char *line)
+static char	*ft_extract_leftover(char *buffer)
 {
 	char	*leftover;
+	char	*line;
 	int		buflen;
 	int		linelen;
 
 	if (!buffer)
 		return (NULL);
 	buflen = ft_strlen(buffer);
+	line = ft_extract_line(buffer);
 	if (!line)
 		return (NULL);
 	linelen = ft_strlen(line);
+	free(line);
 	leftover = ft_substr(buffer, linelen, buflen - linelen);
 	if (!leftover || !leftover[0])
 		return (free_and_return(&leftover));
@@ -85,7 +88,7 @@ static char	*read_until_newline(int fd, char *leftover, char *buf)
 
 char	*get_next_line(int fd)
 {
-	static char	*leftover;
+	static char	*leftover[4096];
 	char		*buf;
 	char		*buffer;
 	char		*line;
@@ -95,18 +98,18 @@ char	*get_next_line(int fd)
 	buf = malloc(BUFFER_SIZE + 1);
 	if (!buf)
 		return (NULL);
-	buffer = read_until_newline(fd, leftover, buf);
+	buffer = read_until_newline(fd, leftover[fd], buf);
 	free(buf);
 	if (!buffer)
-		return (free_and_return(&leftover));
+		return (free_and_return(&leftover[fd]));
 	line = ft_extract_line(buffer);
 	if (!line)
 		return (free_and_return(&buffer));
-	if (leftover)
-		free(leftover);
-	leftover = ft_extract_leftover(buffer, line);
+	if (leftover[fd])
+		free(leftover[fd]);
+	leftover[fd] = ft_extract_leftover(buffer);
 	free(buffer);
-	if ((!line || !*line) && !leftover)
-		return (free_and_return(&line));
+	if ((!line || !*line) && !leftover[fd])
+		free_and_return(&line);
 	return (line);
 }
