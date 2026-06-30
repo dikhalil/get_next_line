@@ -43,8 +43,8 @@ static char	*ft_extract_line(char *buffer)
 static char	*ft_extract_leftover(char *buffer, char *line)
 {
 	char	*leftover;
-	int		buflen;
-	int		linelen;
+	size_t	buflen;
+	size_t	linelen;
 
 	if (!buffer)
 		return (NULL);

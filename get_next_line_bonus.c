@@ -44,8 +44,8 @@ static char	*ft_extract_leftover(char *buffer)
 {
 	char	*leftover;
 	char	*line;
-	int		buflen;
-	int		linelen;
+	size_t	buflen;
+	size_t	linelen;
 
 	if (!buffer)
 		return (NULL);
@@ -110,6 +110,6 @@ char	*get_next_line(int fd)
 	leftover[fd] = ft_extract_leftover(buffer);
 	free(buffer);
 	if ((!line || !*line) && !leftover[fd])
-		free_and_return(&line);
+		return (free_and_return(&line));
 	return (line);
 }
